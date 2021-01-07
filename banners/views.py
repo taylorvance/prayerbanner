@@ -1,11 +1,17 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.views.generic import ListView, DetailView
+from django.utils import timezone
 
-def banner_list(request):
-    return HttpResponse("listing banners...")
+from .models import Banner, Slot
 
-def banner_edit(request):
-    return HttpResponse("editing banner...")
 
-def banner_view(request):
-    return HttpResponse("viewing banner...")
+class BannerList(ListView):
+    model = Banner
+    # queryset = Banner.objects.get(end_at__gt=timezone.now())
+
+class BannerView(DetailView):
+    model = Banner
+
+class BannerEdit(DetailView):
+    model = Banner

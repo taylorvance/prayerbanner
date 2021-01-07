@@ -1,0 +1,10 @@
+{% comment %}{% extends "base.html" %}{% endcomment %}
+
+{% block content %}
+    <h2>Banners</h2>
+    <ul>
+        {% for banner in object_list %}
+            <li>{{ banner.name }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
