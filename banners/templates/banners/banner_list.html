@@ -1,10 +1,46 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Upcoming Banners</h2>
-    <ul>
-        {% for banner in object_list %}
-		<li><a href="/banners/view/{{ banner.pk }}">{{ banner.name }}</a></li>
-        {% endfor %}
-    </ul>
+<h2>Upcoming Banners</h2>
+
+{% load tz %}
+
+<table class="table">
+	<thead>
+		<tr>
+			<th scope="col">Prayer Banner Name</th>
+			<th scope="col">Banner Admin</th>
+			<th scope="col">Moderator</th>
+			<th scope="col">Start</th>
+			<th scope="col">End</th>
+			<th scope="col">Website</th>
+			{% if user.is_staff %}
+			<th scope="col"></th>
+			{% endif %}
+		</tr>
+	</thead>
+	<tbody>
+		{% for banner in object_list %}
+		<tr>
+			<th scope="row"><a href="/banners/{{ banner.pk }}">{{ banner.name }}</a></th>
+			<td>
+				<div><a href="mailto:{{ banner.administrator.email }}">{{ banner.administrator.get_full_name }}</a></div>
+				<div>{{ banner.administrator.phone_number }}</div>
+			</td>
+			<td>
+				<div><a href="mailto:{{ banner.moderator.email }}">{{ banner.moderator.get_full_name }}</a></div>
+				<div>{{ banner.moderator.phone_number }}</div>
+			</td>
+			<td>{{ banner.start_at | localtime }}</td>
+			<td>{{ banner.end_at | localtime }}</td>
+			<td><a href="{{ banner.website }}">{{ banner.website }}</a></td>
+			{% if user.is_staff %}
+			<td>
+				<a class="btn btn-primary btn-sm" href="/banners/{{ banner.pk }}/edit">Edit</a>
+			</td>
+			{% endif %}
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
 {% endblock %}

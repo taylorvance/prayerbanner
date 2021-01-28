@@ -1,5 +1,59 @@
 {% extends "base.html" %}
 
 {% block content %}
-This is {{ banner.name }}.
+<h2>{{ banner.name }} Slots</h2>
+
+<button class="btn btn-primary">emailstuff</button>
+<a class="btn btn-secondary" href="/">Back</a>
+
+<form method="post" action="/banners/{{ banner.pk }}/reserve/">
+	{% csrf_token %}
+
+	<table class="table table-sm table-hover">
+		<thead>
+			<tr>
+				<th scope="col">Date</th>
+				<th scope="col">Time Slot</th>
+				<th scope="col">Name</th>
+				<th scope="col">Weekend</th>
+				<th scope="col">Church</th>
+				{% if user.is_authenticated %}
+					<th scope="col"></th>
+				{% endif %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for interval in banner.intervals %}
+			<tr>
+				<td>{{ interval.start_at | date:"D, F j, Y" }}</td>
+				<td>{{ interval.start_at | date:"g:i A" }} - {{ interval.end_at | date:"g:i A" }}</td>
+				{% if interval.slot %}
+					<td>{{ interval.slot.user.get_full_name }}</td>
+					<td>{{ interval.slot.user.weekend }}</td>
+					<td>{{ interval.slot.user.church }}</td>
+				{% else %}
+					<td></td>
+					<td></td>
+					<td></td>
+				{% endif %}
+				{% if user.is_authenticated %}
+					<td>
+						{% if interval.slot %}
+							{% if interval.slot.user == user  %}
+								<button type="submit" name="release_slot_id" value="{{ interval.slot.pk }}" class="btn btn-danger btn-sm" style="padding:0.1rem 0.3rem; font-size:0.8rem;">
+									Release
+								</button>
+							{% endif %}
+						{% else %}
+							<button type="submit" name="interval_idx" value="{{ interval.i }}" class="btn btn-primary btn-sm" style="padding:0.1rem 0.3rem; font-size:0.8rem;">
+								Reserve
+							</button>
+						{% endif %}
+					</td>
+				{% endif %}
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</form>
 {% endblock %}
