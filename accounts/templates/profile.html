@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+{% block header %}Profile{% endblock %}
+
+{% block content %}
+<form method="post">
+	{% csrf_token %}
+	{% include "form_snippet.html" %}
+	<button type="submit" class="btn btn-primary">Update</button>
+</form>
+
+<br><p><a href="/accounts/password/change/">Click here</a> to change your password.</p>
+{% endblock %}

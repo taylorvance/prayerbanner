@@ -20,5 +20,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('banners/', include('banners.urls')),
+    path('accounts/', include('accounts.urls')),
     re_path(r'', include('website.urls')),
+
+    path('tz_detect/', include('tz_detect.urls')),
 ]

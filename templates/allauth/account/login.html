@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Log In{% endblock %}
+{% block header %}Log In{% endblock %}
+
+{% block content %}
+<p>If you have not created an account yet, then please <a href="{{ signup_url }}">sign up</a> first.</p>
+
+<form class="login" method="POST" action="{% url 'account_login' %}">
+	{% csrf_token %}
+
+	{% include "form_snippet.html" %}
+
+	{% if redirect_field_value %}
+	<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+	{% endif %}
+
+	<button type="submit" class="btn btn-primary">Submit</button>
+
+	<br><br>
+	<a class="" href="{% url 'account_reset_password' %}">Forgot Password?</a>
+</form>
+{% endblock %}

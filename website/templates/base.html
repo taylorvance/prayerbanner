@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
-		<title>{% block title %}{{ title | default:"Prayer Banner" }}{% endblock title %}</title>
+		<title>{% block title %}Prayer Banner{% endblock %}</title>
 
 		{% load static %}
 		<link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.ico' %}"/>
@@ -26,19 +26,17 @@
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						{% if user.is_staff %}
-						<li class="nav-item">
-							<a class="nav-link" href="/admin" class="navbar-item">Admin</a>
-						</li>
+							<li class="nav-item"><a class="nav-link" href="/admin" class="navbar-item">Admin</a></li>
 						{% endif %}
 					</ul>
 
 					<ul class="navbar-nav ml-auto">
 						{% if user.is_authenticated %}
-						<li class="nav-item"><a class="nav-link" href="/account/profile" class="navbar-item">Profile</a></li>
-						<li class="nav-item"><a class="nav-link" href="/account/logout" class="navbar-item">Log out</a></li>
+							<li class="nav-item"><a class="nav-link navbar-item" href="/accounts/profile">Profile</a></li>
+							<li class="nav-item"><a class="nav-link navbar-item" href="/accounts/logout">Log out</a></li>
 						{% else %}
-						<li class="nav-item"><a class="nav-link" href="/signup" class="navbar-item">Sign up</a></li>
-						<li class="nav-item"><a class="nav-link" href="/account/login" class="navbar-item">Log in</a></li>
+							<li class="nav-item"><a class="nav-link navbar-item" href="/accounts/signup">Sign up</a></li>
+							<li class="nav-item"><a class="nav-link navbar-item" href="/accounts/login">Log in</a></li>
 						{% endif %}
 						</div>
 					</ul>
@@ -46,9 +44,30 @@
 			</div>
 		</nav>
 
-		<div class="container" style="padding-top:1em">
-			{% block content %}<p>placeholder content...</p>{% endblock content %}
+		{% if messages %}
+		<div class="bg-light border-bottom" style="padding:0.3em 1em">
+			{% for message in messages %}
+			<div>{{message}}</div>
+			{% endfor %}
 		</div>
+		{% endif %}
+
+		<div class="container" style="flex:1; padding-top:1em;">
+			<h2 style="margin-bottom:0.5em">{% block header %}{% endblock %}</h2>
+			{% block content %}Something went wrong loading the content for this page.{% endblock %}
+		</div>
+
+		{% comment %}extra_body is for allauth compatibility{% endcomment %}
+		{% block extra_body %}{% endblock %}
+
+		<footer class="bg-light border-top" style="padding:0.3em 1em">
+			<small class="text-muted" style="float:right">
+				{% now 'Y-m-d H:i:s e' %}
+			</small>
+		</footer>
+
+		{% load tz_detect %}
+		{% tz_detect %}
 
 		{% block scripts %}{% endblock scripts %}
 
