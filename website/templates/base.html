@@ -13,7 +13,7 @@
 
 		<link href="{% static 'css/styles.css' %}" rel="stylesheet">
 	</head>
-	<body>
+	<body style="display:flex; flex-direction:column; min-height:100vh;">
 		<nav class="navbar navbar-expand-lg navbar-dark" style="background-color:#08088A">
 			<div class="container-fluid">
 				{% comment %}<img src="{% static 'img/banner.gif' %}" alt="Prayer Banner">{% endcomment %}
@@ -27,6 +27,7 @@
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						{% if user.is_staff %}
 							<li class="nav-item"><a class="nav-link" href="/admin" class="navbar-item">Admin</a></li>
+							<li class="nav-item"><a class="nav-link" href="/banners/create" class="navbar-item">New Banner</a></li>
 						{% endif %}
 					</ul>
 

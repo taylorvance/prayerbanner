@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}New Banner{% endblock %}
+{% block header %}New Banner{% endblock %}
+
+{% block content %}
+<form method="post" action="/banners/create">
+	{% csrf_token %}
+	{% include "form_snippet.html" %}
+	<button type="submit" class="btn btn-primary">Create</button>
+</form>
+{% endblock %}

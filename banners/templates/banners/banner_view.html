@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
-{% block content %}
-<h2>{{ banner.name }} Slots</h2>
+{% block title %}{{ banner.name }}{% endblock %}
+{% block header %}{{ banner.name }} Slots{% endblock %}
 
-<button class="btn btn-primary">emailstuff</button>
-<a class="btn btn-secondary" href="/">Back</a>
+{% block content %}
+<p>
+	<button class="btn btn-primary">Email Staff/Participant Lists</button>
+	<a class="btn btn-secondary" href="/">Back</a>
+</p>
 
 <form method="post" action="/banners/{{ banner.pk }}/reserve/">
 	{% csrf_token %}
@@ -25,8 +28,13 @@
 		<tbody>
 			{% for interval in banner.intervals %}
 			<tr>
-				<td>{{ interval.start_at | date:"D, F j, Y" }}</td>
-				<td>{{ interval.start_at | date:"g:i A" }} - {{ interval.end_at | date:"g:i A" }}</td>
+				{% comment %}<td>{{ interval.start_at | date:"D, F j, Y" }}</td>{% endcomment %}
+				<td>{{ interval.start_at | date:"D, M j, Y" }}</td>
+				<td>
+					{{ interval.start_at | date:"P" }}
+					&nbsp;&ndash;&nbsp;
+					{{ interval.end_at | date:"P e" }}
+				</td>
 				{% if interval.slot %}
 					<td>{{ interval.slot.user.get_full_name }}</td>
 					<td>{{ interval.slot.user.weekend }}</td>

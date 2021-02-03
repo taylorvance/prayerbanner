@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 
+{% block title %}{{ banner.name }}{% endblock %}
+{% block header %}{{ banner.name }}{% endblock %}
+
 {% block content %}
-Editing {{ banner.name }}.
+<form method="post" action="/banners/{{ banner.pk }}/edit/">
+	{% csrf_token %}
+	{% include "form_snippet.html" %}
+	<button type="submit" class="btn btn-primary">Save</button>
+</form>
 {% endblock %}
