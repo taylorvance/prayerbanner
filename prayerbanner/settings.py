@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'flatpickr',
 
     'website.apps.WebsiteConfig',
     'banners.apps.BannersConfig',

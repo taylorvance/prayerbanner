@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.views.generic import ListView, CreateView, UpdateView, DetailView
+from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.utils import timezone
 
 from .models import Banner, Slot
+from .forms import BannerForm
 
 
 class BannerList(ListView):
@@ -12,32 +13,36 @@ class BannerList(ListView):
     template_name = 'banners/banner_list.html'
 
 
-class BannerCreate(PermissionRequiredMixin, CreateView):
-    permission_required = 'is_staff'
+class BannerView(DetailView):
     model = Banner
+    template_name = 'banners/banner_view.html'
+
+
+class BannerCreate(PermissionRequiredMixin, CreateView):
+    permission_required = 'banners.add_banner'
+    model = Banner
+    form_class = BannerForm
     template_name = 'banners/banner_create.html'
-    fields = ['name', 'start_at', 'end_at', 'administrator', 'moderator', 'staff', 'participants', 'url']
     success_url = '/'
 
     def get_form_kwargs(self):
         kwargs = super(BannerCreate, self).get_form_kwargs()
         if kwargs['instance'] is None:
             kwargs['instance'] = Banner()
+        # Set author to session user
         kwargs['instance'].author = self.request.user
         return kwargs
 
 
-class BannerEdit(PermissionRequiredMixin, UpdateView):
-    permission_required = 'is_staff'
+class BannerEdit(UserPassesTestMixin, UpdateView):
     model = Banner
+    form_class = BannerForm
     template_name = 'banners/banner_edit.html'
-    fields = ['name', 'start_at', 'end_at', 'administrator', 'moderator', 'staff', 'participants', 'url']
     success_url = '/'
 
+    def test_func(self):
+        return self.request.user.has_perm('banners.change_banner') or self.request.user == self.get_object().administrator
 
-class BannerView(DetailView):
-    model = Banner
-    template_name = 'banners/banner_view.html'
 
 
 @login_required

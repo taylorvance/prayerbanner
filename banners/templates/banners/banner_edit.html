@@ -4,8 +4,16 @@
 {% block header %}{{ banner.name }}{% endblock %}
 
 {% block content %}
+{% load tz %}
+{% get_current_timezone as TIME_ZONE %}
+<div class="alert alert-warning" role="alert">
+	<strong>IMPORTANT!</strong>
+	&nbsp;Enter all times relative to this timezone: <b>{{ TIME_ZONE }}</b>
+</div>
+
 <form method="post" action="/banners/{{ banner.pk }}/edit/">
 	{% csrf_token %}
+	{{ form.media }}
 	{% include "form_snippet.html" %}
 	<button type="submit" class="btn btn-primary">Save</button>
 </form>

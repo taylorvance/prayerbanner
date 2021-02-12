@@ -61,14 +61,14 @@
 		{% comment %}extra_body is for allauth compatibility{% endcomment %}
 		{% block extra_body %}{% endblock %}
 
+		{% load tz_detect %}
+		{% tz_detect %}
+
 		<footer class="bg-light border-top" style="padding:0.3em 1em">
 			<small class="text-muted" style="float:right">
 				{% now 'Y-m-d H:i:s e' %}
 			</small>
 		</footer>
-
-		{% load tz_detect %}
-		{% tz_detect %}
 
 		{% block scripts %}{% endblock scripts %}
 
