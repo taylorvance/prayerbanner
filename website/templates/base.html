@@ -27,6 +27,8 @@
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						{% if user.is_staff %}
 							<li class="nav-item"><a class="nav-link" href="/admin" class="navbar-item">Admin</a></li>
+						{% endif %}
+						{% if perms.banners.add_banner %}
 							<li class="nav-item"><a class="nav-link" href="/banners/create" class="navbar-item">New Banner</a></li>
 						{% endif %}
 					</ul>

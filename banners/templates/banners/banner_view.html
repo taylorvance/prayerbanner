@@ -28,7 +28,6 @@
 		<tbody>
 			{% for interval in banner.intervals %}
 			<tr>
-				{% comment %}<td>{{ interval.start_at | date:"D, F j, Y" }}</td>{% endcomment %}
 				<td>{{ interval.start_at | date:"D, M j, Y" }}</td>
 				<td>
 					{{ interval.start_at | date:"P" }}

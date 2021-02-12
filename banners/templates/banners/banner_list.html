@@ -9,10 +9,10 @@
 			<th scope="col">Prayer Banner Name</th>
 			<th scope="col">Start</th>
 			<th scope="col">End</th>
+			<th scope="col">Website</th>
 			<th scope="col">Event Moderator</th>
 			<th scope="col">Banner Admin</th>
-			<th scope="col">Website</th>
-			{% if user.is_staff %}<th scope="col"></th>{% endif %}
+			<th scope="col"></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -21,6 +21,7 @@
 				<th scope="row"><a href="/banners/{{ banner.pk }}">{{ banner.name }}</a></th>
 				<td>{{ banner.start_at | date:"M j, Y, P e" }}</td>
 				<td>{{ banner.end_at | date:"M j, Y, P e" }}</td>
+				<td><a href="{{ banner.url }}" target="_blank">{{ banner.url }}</a></td>
 				<td>
 					{% if user.is_authenticated %}
 						<div><a href="mailto:{{ banner.moderator.email }}">{{ banner.moderator.get_full_name }}</a></div>
@@ -37,10 +38,17 @@
 						{{ banner.administrator.get_full_name }}
 					{% endif %}
 				</td>
-				<td><a href="{{ banner.url }}" target="_blank">{{ banner.url }}</a></td>
-				{% if user.is_staff %}
-					<td><a class="btn btn-primary btn-sm" href="/banners/{{ banner.pk }}/edit">Edit</a></td>
-				{% endif %}
+				<td>
+					{% if perms.banners.change_banner or user == banner.administrator %}
+						<a class="btn btn-primary btn-sm" href="/banners/{{ banner.pk }}/edit">Edit</a>
+					{% endif %}
+					{% if perms.banners.delete_banner %}
+						<form method="post" action="/banners/{{ banner.pk }}/delete/" style="display:inline-block" onsubmit="return confirm('PERMANENTLY delete {{ banner.name }}?')">
+							{% csrf_token %}
+							<button type="submit" class="btn btn-danger btn-sm">Delete</button>
+						</form>
+					{% endif %}
+				</td>
 			</tr>
 		{% endfor %}
 	</tbody>

@@ -44,6 +44,11 @@ class BannerEdit(UserPassesTestMixin, UpdateView):
         return self.request.user.has_perm('banners.change_banner') or self.request.user == self.get_object().administrator
 
 
+class BannerDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = 'banners.delete_banner'
+    model = Banner
+    success_url = '/'
+
 
 @login_required
 def reserve_slot(request, pk):
