@@ -40,12 +40,21 @@
 				</td>
 				<td>
 					{% if perms.banners.change_banner or user == banner.administrator %}
-						<a class="btn btn-primary btn-sm" href="/banners/{{ banner.pk }}/edit">Edit</a>
+						<a class="btn btn-primary btn-sm" href="/banners/{{ banner.pk }}/edit">
+							Edit
+						</a>
 					{% endif %}
 					{% if perms.banners.delete_banner %}
-						<form method="post" action="/banners/{{ banner.pk }}/delete/" style="display:inline-block" onsubmit="return confirm('PERMANENTLY delete {{ banner.name }}?')">
+						<form
+							method="post"
+							action="/banners/{{ banner.pk }}/delete/"
+							style="display:inline-block"
+							onsubmit="return confirm('Are you sure you want to PERMANENTLY delete &quot;{{ banner.name }}&quot;?')"
+						>
 							{% csrf_token %}
-							<button type="submit" class="btn btn-danger btn-sm">Delete</button>
+							<button type="submit" class="btn btn-danger btn-sm">
+								Delete
+							</button>
 						</form>
 					{% endif %}
 				</td>

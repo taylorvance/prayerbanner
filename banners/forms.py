@@ -2,8 +2,8 @@ from django import forms
 
 from datetime import datetime
 
-from website.widgets import DateTimePicker
 from flatpickr import DateTimePickerInput
+
 from .models import Banner
 
 

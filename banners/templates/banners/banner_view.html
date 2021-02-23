@@ -9,7 +9,7 @@
 	<a class="btn btn-secondary" href="/">Back</a>
 </p>
 
-<form method="post" action="/banners/{{ banner.pk }}/reserve/">
+<form method="post" action="/banners/{{ banner.pk }}/reserve/" onsubmit="return confirm('Are you sure?')">
 	{% csrf_token %}
 
 	<table class="table table-sm table-hover">
@@ -18,8 +18,8 @@
 				<th scope="col">Date</th>
 				<th scope="col">Time Slot</th>
 				<th scope="col">Name</th>
-				<th scope="col">Weekend</th>
 				<th scope="col">Church</th>
+				<th scope="col">Weekend</th>
 				{% if user.is_authenticated %}
 					<th scope="col"></th>
 				{% endif %}
@@ -36,8 +36,8 @@
 				</td>
 				{% if interval.slot %}
 					<td>{{ interval.slot.user.get_full_name }}</td>
-					<td>{{ interval.slot.user.weekend }}</td>
 					<td>{{ interval.slot.user.church }}</td>
+					<td>{{ interval.slot.user.weekend }}</td>
 				{% else %}
 					<td></td>
 					<td></td>
