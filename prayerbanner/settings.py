@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'flatpickr',
+    'tinymce',
 
     'website.apps.WebsiteConfig',
     'banners.apps.BannersConfig',

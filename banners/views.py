@@ -81,3 +81,8 @@ def reserve_slot(request, pk):
             messages.add_message(request, messages.INFO, 'Successfully released {} prayer slot'.format(timezone.localtime(slot.start_at).strftime(date_format)))
 
     return redirect('/banners/{}'.format(banner.pk))
+
+
+class StaffParticipants(DetailView):
+    model = Banner
+    template_name = 'banners/staff_participants.html'

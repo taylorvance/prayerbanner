@@ -56,8 +56,13 @@
 		{% endif %}
 
 		<div class="container" style="flex:1; padding-top:1em;">
-			<h2 style="margin-bottom:0.5em">{% block header %}{% endblock %}</h2>
-			{% block content %}Something went wrong loading the content for this page.{% endblock %}
+			<h2 style="margin-bottom:0.5em">
+				{% block header %}{% endblock %}
+			</h2>
+
+			<div style="padding: 0 0.5em">
+				{% block content %}This page has no content.{% endblock %}
+			</div>
 		</div>
 
 		{% comment %}extra_body is for allauth compatibility{% endcomment %}

@@ -24,4 +24,5 @@ urlpatterns = [
     re_path(r'', include('website.urls')),
 
     path('tz_detect/', include('tz_detect.urls')),
+    path('tinymce/', include('tinymce.urls')),
 ]

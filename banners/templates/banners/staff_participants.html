@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}{{ banner.name }}{% endblock %}
+{% block header %}{{ banner.name }}{% endblock %}
+
+{% block content %}
+<p>
+	<h5>Staff</h5>
+	<div style="padding: 0.5em 1em">{{ banner.staff | safe }}</div>
+</p>
+<p>
+	<h5>Participants</h5>
+	<div style="padding: 0.5em 1em">{{ banner.participants | safe }}</div>
+</p>
+{% endblock %}

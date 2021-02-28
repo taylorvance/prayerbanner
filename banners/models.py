@@ -3,6 +3,8 @@ from django.conf import settings
 
 from datetime import timedelta
 
+from tinymce.models import HTMLField
+
 
 class Banner(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -15,8 +17,8 @@ class Banner(models.Model):
     url = models.URLField(blank=True)
     start_at = models.DateTimeField()
     end_at = models.DateTimeField()
-    staff = models.TextField(blank=True)
-    participants = models.TextField(blank=True)
+    staff = HTMLField(blank=True)
+    participants = HTMLField(blank=True)
 
     class Meta:
         ordering = ["start_at", "end_at"]
