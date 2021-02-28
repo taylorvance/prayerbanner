@@ -5,8 +5,9 @@
 
 {% block content %}
 <p>
-	<button class="btn btn-primary">Email Staff/Participant Lists</button>
-	<a class="btn btn-secondary" href="/">Back</a>
+	<a class="btn btn-primary" href="/banners/{{ banner.pk }}/staff-participants/">
+		View Staff &amp; Participant Lists
+	</a>
 </p>
 
 <form method="post" action="/banners/{{ banner.pk }}/reserve/" onsubmit="return confirm('Are you sure?')">

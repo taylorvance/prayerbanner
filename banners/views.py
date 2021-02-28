@@ -14,9 +14,9 @@ class BannerList(ListView):
     template_name = 'banners/banner_list.html'
 
 
-class BannerView(DetailView):
+class BannerSlots(DetailView):
     model = Banner
-    template_name = 'banners/banner_view.html'
+    template_name = 'banners/banner_slots.html'
 
 
 class BannerCreate(PermissionRequiredMixin, CreateView):
