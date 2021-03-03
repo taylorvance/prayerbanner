@@ -25,7 +25,7 @@ class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True, verbose_name='email address')
     church = models.CharField(max_length=100, blank=True)
-    weekend = models.CharField(max_length=100, blank=True, verbose_name='weekend attended')
+    weekend = models.CharField(max_length=100, blank=True, verbose_name='participant weekend')
 
     objects = UserManager()
 
