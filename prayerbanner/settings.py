@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'flatpickr',
     'tinymce',
+    'captcha',
 
     'website.apps.WebsiteConfig',
     'banners.apps.BannersConfig',

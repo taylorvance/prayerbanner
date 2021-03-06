@@ -1,5 +1,6 @@
 from django import forms
 from allauth.account.forms import SignupForm
+from captcha.fields import CaptchaField
 
 
 class SignupForm(SignupForm):
@@ -7,6 +8,7 @@ class SignupForm(SignupForm):
     last_name = forms.CharField(required=True, max_length=50)
     church = forms.CharField(required=False, max_length=100)
     weekend = forms.CharField(required=False, max_length=100, label='Participant weekend')
+    captcha = CaptchaField()
 
     def signup(self, request, user):
         user.first_name = self.cleaned_data['first_name']
