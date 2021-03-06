@@ -73,7 +73,7 @@ def reserve_slot(request, pk):
             slot.end_at = interval['end_at']
             slot.save()
 
-            messages.add_message(request, messages.INFO, 'Successfully reserved {} prayer slot'.format(timezone.localtime(slot.start_at).strftime(date_format)))
+            messages.success(request, 'Successfully reserved {} prayer slot'.format(timezone.localtime(slot.start_at).strftime(date_format)))
 
             #.redir to thank you page with calendar downloads
             return redirect('/banners/{}'.format(banner.pk))
@@ -82,7 +82,7 @@ def reserve_slot(request, pk):
         if slot.user == request.user:
             slot.delete()
 
-            messages.add_message(request, messages.INFO, 'Successfully released {} prayer slot'.format(timezone.localtime(slot.start_at).strftime(date_format)))
+            messages.success(request, 'Successfully released {} prayer slot'.format(timezone.localtime(slot.start_at).strftime(date_format)))
 
     return redirect('/banners/{}'.format(banner.pk))
 
