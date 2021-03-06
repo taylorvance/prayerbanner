@@ -72,15 +72,27 @@ def reserve_slot(request, pk):
             slot.end_at = interval['end_at']
             slot.save()
 
-            messages.success(request, 'Successfully reserved {} prayer slot'.format(timezone.localtime(slot.start_at).strftime(date_format)))
+            local_start_time = timezone.localtime(slot.start_at).strftime(date_format)
 
-            #.redir to thank you page with calendar downloads
+            #.make the time a link to a calendar download
+            messages.success(request, 'Successfully reserved {} prayer slot'.format(local_start_time))
+
+            result = send_mail(
+                'Prayer Banner - prayer slot confirmation',
+                '{},<p>Thank you for signing up for the {} prayer slot for {}!</p><p>Please add this to your calendar.</p>'.format(request.user.first_name, local_start_time, banner.name),
+                None, # (defaults to DEFAULT_FROM_EMAIL)
+                [request.user.email],
+                fail_silently=True,
+            )
+            if result == 1:
+                messages.info(request, 'You should receive an email confirmation soon')
     elif 'release_slot_id' in request.POST and request.POST['release_slot_id'].isnumeric():
         slot = Slot.objects.get(pk=int(request.POST['release_slot_id']))
         if slot.user == request.user:
             slot.delete()
 
-            messages.success(request, 'Successfully released {} prayer slot'.format(timezone.localtime(slot.start_at).strftime(date_format)))
+            local_start_time = timezone.localtime(slot.start_at).strftime(date_format)
+            messages.info(request, 'Released {} prayer slot'.format(local_start_time))
 
     return redirect('/banners/{}'.format(banner.pk))
 
