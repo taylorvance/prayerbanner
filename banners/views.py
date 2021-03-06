@@ -1,9 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.utils import timezone
 from django.contrib import messages
+from django.core.mail import send_mail
+
+from smtplib import SMTPException
 
 from .models import Banner, Slot
 from .forms import BannerForm
@@ -86,3 +90,27 @@ def reserve_slot(request, pk):
 class StaffParticipants(DetailView):
     model = Banner
     template_name = 'banners/staff_participants.html'
+
+@login_required
+@require_POST
+def email_staff_participants(request, pk):
+    banner = Banner.objects.get(pk=pk)
+
+    try:
+        result = send_mail(
+            'Prayer Banner - {} Staff & Participants'.format(banner.name),
+            '<h4>Staff</h4><p>{}</p><h4>Participants</h4><p>{}</p>'.format(banner.staff, banner.participants),
+            None, # (defaults to DEFAULT_FROM_EMAIL)
+            [request.user.email],
+            fail_silently=False,
+        )
+        if result == 1:
+            messages.success(request, 'Email sent to {}'.format(request.user.email))
+        else:
+            raise
+    except SMTPException:
+        messages.error(request, 'Failed to send email')
+    except:
+        messages.warning(request, 'Something went wrong. If you do not receive the email in a few minutes please try again or contact us.')
+
+    return redirect('/banners/{}'.format(banner.pk))

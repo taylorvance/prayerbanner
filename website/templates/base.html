@@ -47,11 +47,11 @@
 		</nav>
 
 		{% if messages %}
-		<div class="bg-light border-bottom" style="padding:0.3em 1em">
 			{% for message in messages %}
-			<div>{{message}}</div>
+				<div class="{{ message.tags }}">
+					{{ message }}
+				</div>
 			{% endfor %}
-		</div>
 		{% endif %}
 
 		<div class="container" style="flex:1; padding-top:1em;">

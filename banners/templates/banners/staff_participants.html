@@ -4,12 +4,19 @@
 {% block header %}{{ banner.name }}{% endblock %}
 
 {% block content %}
+<form method="post" action="/banners/{{ banner.pk }}/staff-participants/email/" onsubmit="return confirm('Send email to {{ user.email }}?')">
+	{% csrf_token %}
+	<button type="submit" class="btn btn-primary">
+		Email me these lists
+	</button>
+</form>
+
 <p>
-	<h5>Staff</h5>
+	<h4>Staff</h4>
 	<div style="padding: 0.5em 1em">{{ banner.staff | safe }}</div>
 </p>
 <p>
-	<h5>Participants</h5>
+	<h4>Participants</h4>
 	<div style="padding: 0.5em 1em">{{ banner.participants | safe }}</div>
 </p>
 {% endblock %}

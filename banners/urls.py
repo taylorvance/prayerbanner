@@ -12,4 +12,5 @@ urlpatterns = [
     path('<int:pk>/reserve/', views.reserve_slot, name='reserve-slot'),
 
     path('<int:pk>/staff-participants/', views.StaffParticipants.as_view(), name='staff-participants'),
+    path('<int:pk>/staff-participants/email/', views.email_staff_participants, name='email-staff-participants'),
 ]

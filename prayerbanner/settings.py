@@ -18,6 +18,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import environ
 from pathlib import Path
 
+# https://django-environ.readthedocs.io/en/latest/
 env = environ.Env()
 environ.Env.read_env()
 
@@ -97,18 +98,14 @@ WSGI_APPLICATION = 'prayerbanner.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
+# See "db_url" on https://django-environ.readthedocs.io/en/latest/#supported-types
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': env.db_url('DATABASE_URL', default='sqlite:////tmp/prayerbanner-db.sqlite3')
 }
 
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -122,7 +119,38 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-EMAIL_BACKEND = env.str('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+# This expands into EMAIL_BACKEND, EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER, and EMAIL_HOST_PASSWORD
+# SMTP example: EMAIL_URL=smtp://user:password@prayerbanner.org:25
+# See "email_url" on https://django-environ.readthedocs.io/en/latest/#supported-types
+EMAIL_CONFIG = env.email_url('EMAIL_URL', default='consolemail://')
+vars().update(EMAIL_CONFIG)
+
+EMAIL_USE_TLS = False
+
+DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', default='admin@localhost')
+
+
+# Overriding these tags (css classes) for Bootstrap
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert alert-secondary',
+    messages.INFO: 'alert alert-info',
+    messages.SUCCESS: 'alert alert-success',
+    messages.WARNING: 'alert alert-warning',
+    messages.ERROR: 'alert alert-danger',
+}
+
+# Settings for the WYSIWYG editor
+# https://django-tinymce.readthedocs.io/en/latest/installation.html#configuration
+# https://www.tiny.cloud/docs/general-configuration-guide/
+TINYMCE_DEFAULT_CONFIG = {
+    'force_br_newlines': True,
+    'force_p_newlines': False,
+    'forced_root_block': '',
+    'plugins': 'code lists table',
+    'menubar': False,
+    'toolbar': 'undo redo | bold italic underline | fontsizeselect formatselect | numlist bullist table | code',
+}
 
 
 # Internationalization
@@ -155,13 +183,11 @@ AUTH_USER_MODEL = 'accounts.User'
 # This is required for allauth
 SITE_ID = 1
 
-# These settings control signup. I chose what I thought reasonable and secure. Feel free to peruse the docs and adjust.
-# One you might want to change to give a better user experience (but less secure) is ACCOUNT_EMAIL_VERIFICATION.
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION = env.str('ACCOUNT_EMAIL_VERIFICATION', 'mandatory')
 ACCOUNT_FORMS = {
     'signup': 'accounts.forms.SignupForm',
 }
