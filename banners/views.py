@@ -65,8 +65,7 @@ def reserve_slot(request, pk):
         interval = banner.intervals()[int(request.POST['interval_idx'])]
 
         if interval['slot']:
-            #.error: slot already reserved
-            pass
+            messages.error(request, 'That slot has already been reserved')
         else:
             slot = Slot(banner=banner, user=request.user)
             slot.start_at = interval['start_at']
@@ -76,7 +75,6 @@ def reserve_slot(request, pk):
             messages.success(request, 'Successfully reserved {} prayer slot'.format(timezone.localtime(slot.start_at).strftime(date_format)))
 
             #.redir to thank you page with calendar downloads
-            return redirect('/banners/{}'.format(banner.pk))
     elif 'release_slot_id' in request.POST and request.POST['release_slot_id'].isnumeric():
         slot = Slot.objects.get(pk=int(request.POST['release_slot_id']))
         if slot.user == request.user:
