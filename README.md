@@ -1,8 +1,17 @@
 # prayerbanner
 
-prereqs: git, docker
+To set up using the Django dev server on your local system:
+```
+git clone https://github.com/taylorvance/prayerbanner.git
+cd prayerbanner
+cp prayerbanner/.env.example prayerbanner/.env
+source venv/bin/activate
+pip install -r requirements.py
+python manage.py migrate
+python manage.py runserver
+```
 
-to set up on local system
+To set up using docker on your local system:
 ```
 git clone https://github.com/taylorvance/prayerbanner.git
 cd prayerbanner
