@@ -9,16 +9,17 @@ from tinymce.models import HTMLField
 class Banner(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='authored_banners')
-    administrator = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name='administered_banners')
-    moderator = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name='moderated_banners')
     name = models.CharField(max_length=255)
-    hide = models.BooleanField(default=False)
-    # Field for slot duration? Options 15, 30 (default). May not be changed after creation. It hasn't been needed for 30 years so I'll leave that scope uncrept.
     url = models.URLField(blank=True)
     start_at = models.DateTimeField()
     end_at = models.DateTimeField()
+    # Field for slot duration? Options 15, 30 (default). May not be changed after creation. It hasn't been needed for 30 years so I'll leave that scope uncrept.
+    administrator = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name='administered_banners')
+    moderator_name = models.CharField(blank=True, max_length=127)
+    moderator_email = models.EmailField(blank=True)
     staff = HTMLField(blank=True)
     participants = HTMLField(blank=True)
+    hide = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["start_at", "end_at"]

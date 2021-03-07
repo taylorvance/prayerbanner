@@ -23,17 +23,15 @@
 				<td>{{ banner.end_at | date:"M j, Y, P e" }}</td>
 				<td><a href="{{ banner.url }}" target="_blank">{{ banner.url }}</a></td>
 				<td>
-					{% if user.is_authenticated %}
-						<div><a href="mailto:{{ banner.moderator.email }}">{{ banner.moderator.get_full_name }}</a></div>
-						<div>{{ banner.moderator.phone_number }}</div>
+					{% if user.is_authenticated and banner.moderator_email %}
+						<div><a href="mailto:{{ banner.moderator_email }}">{{ banner.moderator_name }}</a></div>
 					{% else %}
-						{{ banner.moderator.get_full_name }}
+						{{ banner.moderator_name }}
 					{% endif %}
 				</td>
 				<td>
 					{% if user.is_authenticated %}
 						<div><a href="mailto:{{ banner.administrator.email }}">{{ banner.administrator.get_full_name }}</a></div>
-						<div>{{ banner.administrator.phone_number }}</div>
 					{% else %}
 						{{ banner.administrator.get_full_name }}
 					{% endif %}
