@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 
 from smtplib import SMTPException
+from allauth.account.models import EmailAddress
 
 from .models import Banner, Slot
 from .forms import BannerForm
@@ -77,15 +78,17 @@ def reserve_slot(request, pk):
             #.make the time a link to a calendar download
             messages.success(request, 'Successfully reserved {} prayer slot'.format(local_start_time))
 
-            result = send_mail(
-                'Prayer Banner - prayer slot confirmation',
-                '{},<p>Thank you for signing up for the {} prayer slot for {}!</p><p>Please add this to your calendar.</p>'.format(request.user.first_name, local_start_time, banner.name),
-                None, # (defaults to DEFAULT_FROM_EMAIL)
-                [request.user.email],
-                fail_silently=True,
-            )
-            if result == 1:
-                messages.info(request, 'You should receive an email confirmation soon')
+            email = request.user.email
+            if EmailAddress.objects.filter(email=email, verified=True).exists():
+                result = send_mail(
+                    'Prayer Banner - prayer slot confirmation',
+                    '{},<p>Thank you for signing up for the {} prayer slot for {}!</p><p>Please add this to your calendar.</p>'.format(request.user.first_name, local_start_time, banner.name),
+                    None, # (defaults to DEFAULT_FROM_EMAIL)
+                    [email],
+                    fail_silently=True,
+                )
+                if result == 1:
+                    messages.info(request, 'You should receive an email confirmation soon')
     elif 'release_slot_id' in request.POST and request.POST['release_slot_id'].isnumeric():
         slot = Slot.objects.get(pk=int(request.POST['release_slot_id']))
         if slot.user == request.user:
@@ -107,17 +110,21 @@ def email_staff_participants(request, pk):
     banner = Banner.objects.get(pk=pk)
 
     try:
-        result = send_mail(
-            'Prayer Banner - {} Staff & Participants'.format(banner.name),
-            '<h4>Staff</h4><p>{}</p><h4>Participants</h4><p>{}</p>'.format(banner.staff, banner.participants),
-            None, # (defaults to DEFAULT_FROM_EMAIL)
-            [request.user.email],
-            fail_silently=False,
-        )
-        if result == 1:
-            messages.success(request, 'Email sent to {}'.format(request.user.email))
+        email = request.user.email
+        if EmailAddress.objects.filter(email=email, verified=True).exists():
+            result = send_mail(
+                'Prayer Banner - {} Staff & Participants'.format(banner.name),
+                '<h4>Staff</h4><p>{}</p><h4>Participants</h4><p>{}</p>'.format(banner.staff, banner.participants),
+                None, # (defaults to DEFAULT_FROM_EMAIL)
+                [request.user.email],
+                fail_silently=False,
+            )
+            if result == 1:
+                messages.success(request, 'Email sent to {}'.format(request.user.email))
+            else:
+                raise
         else:
-            raise
+            messages.error(request, 'Your email address ({}) has not been verified. Visit your Profile to manage your email addresses.'.format(email))
     except SMTPException:
         messages.error(request, 'Failed to send email')
     except:
