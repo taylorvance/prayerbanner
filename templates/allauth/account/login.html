@@ -6,6 +6,13 @@
 {% block content %}
 <p>If you have not created an account yet, then please <a href="{{ signup_url }}">sign up</a> first.</p>
 
+<div class="alert alert-info">
+	<h5>April 2021 Notice</h5>
+	prayerbanner.org has been rewritten from the ground up.
+	If your credentials from the old site are not working, you may need to <a href="{{ signup_url }}">sign up</a> again.
+	We apologize for the inconvenience.
+</div>
+
 <form class="login" method="POST" action="{% url 'account_login' %}">
 	{% csrf_token %}
 
