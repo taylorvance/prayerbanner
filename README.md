@@ -27,7 +27,7 @@ cp prayerbanner/.env.example prayerbanner/.env
 ```
 virtualenv venv
 source venv/bin/activate
-pip install -r requirements.py
+pip install -r requirements.txt
 ```
 
 4. Do the initial Django setup and run the local server.
