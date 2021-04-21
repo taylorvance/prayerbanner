@@ -6,6 +6,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.utils import timezone
 from django.contrib import messages
 from django.core.mail import send_mail
+from django.utils.html import strip_tags
 
 from smtplib import SMTPException
 from allauth.account.models import EmailAddress
@@ -80,12 +81,14 @@ def reserve_slot(request, pk):
 
             email = request.user.email
             if EmailAddress.objects.filter(email=email, verified=True).exists():
+                html = '{},<p>Thank you for signing up for the {} prayer slot for {}!</p><p>Please add this to your calendar.</p>'.format(request.user.first_name, local_start_time, banner.name)
                 result = send_mail(
                     'Prayer Banner - prayer slot confirmation',
-                    '{},<p>Thank you for signing up for the {} prayer slot for {}!</p><p>Please add this to your calendar.</p>'.format(request.user.first_name, local_start_time, banner.name),
+                    strip_tags(html),
                     None, # (defaults to DEFAULT_FROM_EMAIL)
                     [email],
                     fail_silently=True,
+                    html_message=html,
                 )
                 if result == 1:
                     messages.info(request, 'You should receive an email confirmation soon')
@@ -112,12 +115,14 @@ def email_staff_participants(request, pk):
     try:
         email = request.user.email
         if EmailAddress.objects.filter(email=email, verified=True).exists():
+            html = '<h4>Staff</h4><p>{}</p><h4>Participants</h4><p>{}</p>'.format(banner.staff, banner.participants)
             result = send_mail(
                 'Prayer Banner - {} Staff & Participants'.format(banner.name),
-                '<h4>Staff</h4><p>{}</p><h4>Participants</h4><p>{}</p>'.format(banner.staff, banner.participants),
+                strip_tags(html),
                 None, # (defaults to DEFAULT_FROM_EMAIL)
                 [request.user.email],
                 fail_silently=False,
+                html_message=html,
             )
             if result == 1:
                 messages.success(request, 'Email sent to {}'.format(request.user.email))
