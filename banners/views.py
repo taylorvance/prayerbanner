@@ -81,9 +81,9 @@ def reserve_slot(request, pk):
 
             email = request.user.email
             if EmailAddress.objects.filter(email=email, verified=True).exists():
-                html = '{},<p>Thank you for signing up for the {} prayer slot for {}!</p><p>Please add this to your calendar.</p>'.format(request.user.first_name, local_start_time, banner.name)
+                html = '{}, <p>Thank you for signing up for the {} prayer slot for {}!</p> <p>Please add a reminder to your calendar.</p>'.format(request.user.first_name, local_start_time, banner.name)
                 result = send_mail(
-                    'Prayer Banner - prayer slot confirmation',
+                    'Pray for {}'.format(banner.name),
                     strip_tags(html),
                     None, # (defaults to DEFAULT_FROM_EMAIL)
                     [email],
@@ -115,9 +115,9 @@ def email_staff_participants(request, pk):
     try:
         email = request.user.email
         if EmailAddress.objects.filter(email=email, verified=True).exists():
-            html = '<h4>Staff</h4><p>{}</p><h4>Participants</h4><p>{}</p>'.format(banner.staff, banner.participants)
+            html = '<h3>Staff</h3> <p>{}</p> <h3>Participants</h3> <p>{}</p>'.format(banner.staff, banner.participants)
             result = send_mail(
-                'Prayer Banner - {} Staff & Participants'.format(banner.name),
+                '{} Staff & Participants'.format(banner.name),
                 strip_tags(html),
                 None, # (defaults to DEFAULT_FROM_EMAIL)
                 [request.user.email],
