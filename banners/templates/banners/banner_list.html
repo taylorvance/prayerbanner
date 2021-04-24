@@ -55,6 +55,19 @@
 							</button>
 						</form>
 					{% endif %}
+					{% if perms.banners.send_slot_reminders %}
+						<form
+							method="post"
+							action="/banners/{{ banner.pk }}/send-reminders/"
+							style="display:inline-block"
+							onsubmit="return confirm('Send ALL unsent prayer slot reminders for &quot;{{ banner.name }}&quot;? This should only be done right before the event.')"
+						>
+							{% csrf_token %}
+							<button type="submit" class="btn btn-secondary btn-sm">
+								Send Reminders
+							</button>
+						</form>
+					{% endif %}
 				</td>
 			</tr>
 		{% endfor %}

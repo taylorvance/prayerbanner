@@ -8,8 +8,11 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
 
-from smtplib import SMTPException
 from allauth.account.models import EmailAddress
+
+from smtplib import SMTPException
+from collections import defaultdict
+from datetime import datetime
 
 from .models import Banner, Slot
 from .forms import BannerForm
@@ -136,3 +139,52 @@ def email_staff_participants(request, pk):
         messages.warning(request, 'Something went wrong. If you do not receive the email in a few minutes please try again or contact us.')
 
     return redirect('/banners/{}'.format(banner.pk))
+
+@login_required
+@require_POST
+def send_banner_slot_reminders(request, pk):
+    if not request.user.has_perm('banners.send_slot_reminders'):
+        messages.error(request, 'You do not have permission to send the prayer slot reminder email.')
+        return redirect('/')
+
+    banner = Banner.objects.get(pk=pk)
+
+    user_slots = defaultdict(list)
+
+    for slot in banner.slot_set.all():
+        user_slots[slot.user].append(slot)
+
+    date_format = "%b %d, %I:%M %p %Z"
+
+    i = 0
+    for user, slots in user_slots.items():
+        # If all of the user's slots' reminders have been sent, skip this user.
+        if not [s for s in slots if not s.reminder_sent]:
+            continue
+
+        if EmailAddress.objects.filter(email=user.email, verified=True).exists():
+            html = '{},\n<p>This is a reminder that you reserved the following prayer slots.</p>\n'.format(request.user.first_name)
+
+            for slot in slots:
+                html += '{} - {}<br>\n'.format(timezone.localtime(slot.start_at).strftime(date_format), timezone.localtime(slot.end_at).strftime(date_format))
+
+            result = send_mail(
+                "Don't forget to pray for {}!".format(banner.name),
+                strip_tags(html),
+                None, # (defaults to DEFAULT_FROM_EMAIL)
+                [request.user.email],
+                fail_silently=True,
+                html_message=html,
+            )
+            if result == 1:
+                i += 1
+                for slot in slots:
+                    slot.reminder_sent = datetime.now()
+                    slot.save()
+
+    if i == 0:
+        messages.info(request, "No reminders sent. This may be because they have already been sent, or an email address has not been verified.")
+    else:
+        messages.success(request, 'Reminder sent to {} user{}'.format(i, '' if i==1 else 's' ))
+
+    return redirect('/')

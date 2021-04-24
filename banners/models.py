@@ -22,6 +22,9 @@ class Banner(models.Model):
     hide = models.BooleanField(default=False)
 
     class Meta:
+        permissions = [
+            ("send_slot_reminders", "Can initiate the pre-event reminder email to those who reserved slots"),
+        ]
         ordering = ["start_at", "end_at"]
 
     def __str__(self):
@@ -54,6 +57,7 @@ class Slot(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     start_at = models.DateTimeField()
     end_at = models.DateTimeField()
+    reminder_sent = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         unique_together = [['banner', 'start_at']]

@@ -24,6 +24,9 @@
 				{% if user.is_authenticated %}
 					<th scope="col"></th>
 				{% endif %}
+				{% if perms.banners.send_slot_reminders %}
+					<th scope="col">Reminder Sent?</th>
+				{% endif %}
 			</tr>
 		</thead>
 		<tbody>
@@ -56,6 +59,19 @@
 							<button type="submit" name="interval_idx" value="{{ interval.i }}" class="btn btn-primary btn-sm" style="padding:0.1rem 0.3rem; font-size:0.8rem;">
 								Reserve
 							</button>
+						{% endif %}
+					</td>
+				{% endif %}
+				{% if perms.banners.send_slot_reminders %}
+					<td style="font-size:0.8em">
+						{% if interval.slot %}
+							{% if interval.slot.reminder_sent %}
+								{{ interval.slot.reminder_sent | date:"M j, Y P e" }}
+							{% else %}
+								not sent
+							{% endif %}
+						{% else %}
+							&dash;
 						{% endif %}
 					</td>
 				{% endif %}

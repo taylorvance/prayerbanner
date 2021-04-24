@@ -13,4 +13,6 @@ urlpatterns = [
 
     path('<int:pk>/staff-participants/', views.StaffParticipants.as_view(), name='staff-participants'),
     path('<int:pk>/staff-participants/email/', views.email_staff_participants, name='email-staff-participants'),
+
+    path('<int:pk>/send-reminders/', views.send_banner_slot_reminders, name='send-reminders'),
 ]
