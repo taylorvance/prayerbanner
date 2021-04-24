@@ -24,7 +24,7 @@
 				{% if user.is_authenticated %}
 					<th scope="col"></th>
 				{% endif %}
-				{% if perms.banners.send_slot_reminders %}
+				{% if perms.banners.send_slot_reminders or user == banner.administrator %}
 					<th scope="col">Reminder Sent?</th>
 				{% endif %}
 			</tr>
@@ -62,7 +62,7 @@
 						{% endif %}
 					</td>
 				{% endif %}
-				{% if perms.banners.send_slot_reminders %}
+				{% if perms.banners.send_slot_reminders or user == banner.administrator %}
 					<td style="font-size:0.8em">
 						{% if interval.slot %}
 							{% if interval.slot.reminder_sent %}

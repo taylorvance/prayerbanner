@@ -55,7 +55,7 @@
 							</button>
 						</form>
 					{% endif %}
-					{% if perms.banners.send_slot_reminders %}
+					{% if perms.banners.send_slot_reminders or user == banner.administrator %}
 						<form
 							method="post"
 							action="/banners/{{ banner.pk }}/send-reminders/"

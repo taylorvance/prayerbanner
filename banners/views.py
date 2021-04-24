@@ -143,11 +143,11 @@ def email_staff_participants(request, pk):
 @login_required
 @require_POST
 def send_banner_slot_reminders(request, pk):
-    if not request.user.has_perm('banners.send_slot_reminders'):
+    banner = Banner.objects.get(pk=pk)
+
+    if not request.user.has_perm('banners.send_slot_reminders') and request.user != banner.administrator:
         messages.error(request, 'You do not have permission to send the prayer slot reminder email.')
         return redirect('/')
-
-    banner = Banner.objects.get(pk=pk)
 
     user_slots = defaultdict(list)
 
