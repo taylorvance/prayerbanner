@@ -163,7 +163,7 @@ def send_banner_slot_reminders(request, pk):
             continue
 
         if EmailAddress.objects.filter(email=user.email, verified=True).exists():
-            html = '{},\n<p>This is a reminder that you reserved the following prayer slots.</p>\n'.format(request.user.first_name)
+            html = '{},\n<p>This is a reminder that you reserved the following prayer slots.</p>\n'.format(user.first_name)
 
             for slot in slots:
                 html += '{} - {}<br>\n'.format(timezone.localtime(slot.start_at).strftime(date_format), timezone.localtime(slot.end_at).strftime(date_format))
@@ -172,7 +172,7 @@ def send_banner_slot_reminders(request, pk):
                 "Don't forget to pray for {}!".format(banner.name),
                 strip_tags(html),
                 None, # (defaults to DEFAULT_FROM_EMAIL)
-                [request.user.email],
+                [user.email],
                 fail_silently=True,
                 html_message=html,
             )
