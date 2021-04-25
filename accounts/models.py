@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.conf import settings
 
+import pytz
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -26,6 +28,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True, verbose_name='email address')
     church = models.CharField(max_length=100, blank=True)
     weekend = models.CharField(max_length=100, blank=True, verbose_name='participant weekend')
+    timezone = models.CharField(max_length=100, blank=True)
 
     objects = UserManager()
 
@@ -33,3 +36,10 @@ class User(AbstractUser):
     EMAIL_FIELD = 'email'
     # https://docs.djangoproject.com/en/3.1/topics/auth/customizing/#django.contrib.auth.models.CustomUser.REQUIRED_FIELDS
     REQUIRED_FIELDS = []
+
+    @property
+    def tzinfo(self):
+        try:
+            return pytz.timezone(str(self.timezone)) if self.timezone else None
+        except:
+            return None

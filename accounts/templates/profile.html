@@ -11,6 +11,16 @@
 </form>
 
 <br>
-<p>To change your password, <a href="/accounts/password/change/">click here</a>.</p>
-<p>To manage your email addresses, <a href="/accounts/email/">click here</a>.</p>
+<p>
+	To change your password, <a href="/accounts/password/change/">click here</a>.
+	<br>To manage your email addresses, <a href="/accounts/email/">click here</a>.
+</p>
+
+{% if user.timezone %}
+	<br>
+	<p class="text-muted">
+		The timezone of your most recent session is <strong>{{ user.timezone }}</strong>.
+		This is the timezone that will be used in emails that we send to you.
+	</p>
+{% endif %}
 {% endblock %}

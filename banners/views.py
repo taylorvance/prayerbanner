@@ -66,6 +66,8 @@ def reserve_slot(request, pk):
 
     date_format = "%b %d, %I:%M %p %Z"
 
+    tz = request.user.tzinfo or timezone.get_current_timezone()
+
     if 'interval_idx' in request.POST and request.POST['interval_idx'].isnumeric():
         interval = banner.intervals()[int(request.POST['interval_idx'])]
 
@@ -77,14 +79,13 @@ def reserve_slot(request, pk):
             slot.end_at = interval['end_at']
             slot.save()
 
-            local_start_time = timezone.localtime(slot.start_at).strftime(date_format)
+            local_start_time = timezone.localtime(slot.start_at, tz).strftime(date_format)
 
-            #.make the time a link to a calendar download
             messages.success(request, 'Successfully reserved {} prayer slot'.format(local_start_time))
 
             email = request.user.email
             if EmailAddress.objects.filter(email=email, verified=True).exists():
-                html = '{}, <p>Thank you for signing up for the {} prayer slot for {}!</p> <p>Please add a reminder to your calendar.</p>'.format(request.user.first_name, local_start_time, banner.name)
+                html = '{},\n<p>Thank you for signing up for the {} prayer slot for {}!</p>\n<p>Please add a reminder to your calendar.</p>'.format(request.user.first_name, local_start_time, banner.name)
                 result = send_mail(
                     'Pray for {}'.format(banner.name),
                     strip_tags(html),
@@ -100,7 +101,7 @@ def reserve_slot(request, pk):
         if slot.user == request.user:
             slot.delete()
 
-            local_start_time = timezone.localtime(slot.start_at).strftime(date_format)
+            local_start_time = timezone.localtime(slot.start_at, tz).strftime(date_format)
             messages.info(request, 'Released {} prayer slot'.format(local_start_time))
 
     return redirect('/banners/{}'.format(banner.pk))
@@ -118,7 +119,7 @@ def email_staff_participants(request, pk):
     try:
         email = request.user.email
         if EmailAddress.objects.filter(email=email, verified=True).exists():
-            html = '<h3>Staff</h3> <p>{}</p> <h3>Participants</h3> <p>{}</p>'.format(banner.staff, banner.participants)
+            html = '<h3>Staff</h3>\n<p>{}</p>\n<h3>Participants</h3>\n<p>{}</p>'.format(banner.staff, banner.participants)
             result = send_mail(
                 '{} Staff & Participants'.format(banner.name),
                 strip_tags(html),
@@ -165,11 +166,12 @@ def send_banner_slot_reminders(request, pk):
         if EmailAddress.objects.filter(email=user.email, verified=True).exists():
             html = '{},\n<p>This is a reminder that you reserved the following prayer slots.</p>\n'.format(user.first_name)
 
+            tz = user.tzinfo or timezone.get_current_timezone()
             for slot in slots:
-                html += '{} - {}<br>\n'.format(timezone.localtime(slot.start_at).strftime(date_format), timezone.localtime(slot.end_at).strftime(date_format))
+                html += '{} - {}<br>\n'.format(timezone.localtime(slot.start_at, tz).strftime(date_format), timezone.localtime(slot.end_at, tz).strftime(date_format))
 
             result = send_mail(
-                "Don't forget to pray for {}!".format(banner.name),
+                'Pray for {}'.format(banner.name),
                 strip_tags(html),
                 None, # (defaults to DEFAULT_FROM_EMAIL)
                 [user.email],
@@ -183,7 +185,7 @@ def send_banner_slot_reminders(request, pk):
                     slot.save()
 
     if i == 0:
-        messages.info(request, "No reminders sent. This may be because they have already been sent, or an email address has not been verified.")
+        messages.info(request, "No reminders sent. This may be because they have already been sent, or because one or more email addresses have not been verified.")
     else:
         messages.success(request, 'Reminder sent to {} user{}'.format(i, '' if i==1 else 's' ))
 

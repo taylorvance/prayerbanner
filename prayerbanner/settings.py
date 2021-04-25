@@ -71,6 +71,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'tz_detect.middleware.TimezoneMiddleware',
+    'accounts.middleware.UserTimezoneMiddleware',
 ]
 
 ROOT_URLCONF = 'prayerbanner.urls'
