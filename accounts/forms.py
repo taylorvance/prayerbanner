@@ -8,7 +8,7 @@ class MySignupForm(SignupForm):
     last_name = forms.CharField(required=True, max_length=50)
     church = forms.CharField(required=False, max_length=100)
     weekend = forms.CharField(required=False, max_length=100, label='Participant weekend')
-    captcha = CaptchaField(help_text='If you get it wrong, the page will reload with all of your input intact.')
+    captcha = CaptchaField(help_text="Don't worry &mdash; if you get it wrong you can try again. The rest of your input will be saved.")
 
     def save(self, request):
         user = super(MySignupForm, self).save(request)
