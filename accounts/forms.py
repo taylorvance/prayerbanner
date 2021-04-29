@@ -1,4 +1,5 @@
 from django import forms
+
 from allauth.account.forms import SignupForm
 from captcha.fields import CaptchaField
 
@@ -7,7 +8,12 @@ class MySignupForm(SignupForm):
     first_name = forms.CharField(required=True, max_length=50)
     last_name = forms.CharField(required=True, max_length=50)
     church = forms.CharField(required=False, max_length=100)
-    weekend = forms.CharField(required=False, max_length=100, label='Participant weekend')
+    weekend = forms.CharField(
+        required=False,
+        max_length=100,
+        label='Participant weekend',
+        help_text='What was the name of the weekend that you attended as a participant?',
+    )
     captcha = CaptchaField(help_text="Don't worry &mdash; if you get it wrong you can try again. The rest of your input will be saved.")
 
     def save(self, request):
