@@ -1,6 +1,6 @@
 """
-This Django project created by Taylor Vance (Austin Pilgrimage #44)
-A rewrite of Mike Dempsey's (Austin Presbyterian Cursillo #6) original prayerbanner.org
+This Django project was created by Taylor Vance (Austin Pilgrimage #44)
+It is a rewrite of Mike Dempsey's (Austin Presbyterian Cursillo #6) original prayerbanner.org
 
 ====
 
@@ -200,4 +200,11 @@ ACCOUNT_USER_DISPLAY = lambda user: user.get_full_name()
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USERNAME_REQUIRED = False
 
-CAPTCHA_LENGTH = 6
+CAPTCHA_CHALLENGE_FUNCT = env.str('CAPTCHA_CHALLENGE_FUNCT', 'captcha.helpers.random_char_challenge')
+CAPTCHA_LENGTH = env.int('CAPTCHA_LENGTH', 4)
+CAPTCHA_DICTIONARY_MIN_LENGTH = env.int('CAPTCHA_DICTIONARY_MIN_LENGTH', 0)
+CAPTCHA_LETTER_ROTATION = (-10, 30)
+CAPTCHA_NOISE_FUNCTIONS = ('accounts.helpers.noise_lines', 'captcha.helpers.noise_dots')
+CAPTCHA_FILTER_FUNCTIONS = ('captcha.helpers.post_smooth', 'accounts.helpers.post_sharpen', 'accounts.helpers.post_magnify', 'accounts.helpers.post_crop')
+CAPTCHA_BACKGROUND_COLOR = '#fed'
+CAPTCHA_FOREGROUND_COLOR = '#248'
