@@ -5,7 +5,8 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMi
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.utils import timezone
 from django.contrib import messages
-from django.core.mail import send_mail
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
 from django.utils.html import strip_tags
 
 from allauth.account.models import EmailAddress
@@ -86,14 +87,15 @@ def reserve_slot(request, pk):
             email = request.user.email
             if EmailAddress.objects.filter(email=email, verified=True).exists():
                 html = '{},\n<p>Thank you for signing up for the {} prayer slot for {}!</p>\n<p>Please add a reminder to your calendar.</p>'.format(request.user.first_name, local_start_time, banner.name)
-                result = send_mail(
-                    'Pray for {}'.format(banner.name),
-                    strip_tags(html),
-                    None, # (defaults to DEFAULT_FROM_EMAIL)
-                    [email],
-                    fail_silently=True,
-                    html_message=html,
+                msg = EmailMultiAlternatives(
+                    'Pray for {}'.format(banner.name), # subject
+                    strip_tags(html), # text content
+                    'Prayer Banner <{}>'.format(settings.DEFAULT_FROM_EMAIL), # from
+                    [email], # to
+                    [settings.DEFAULT_FROM_EMAIL], # bcc
                 )
+                msg.attach_alternative(html, "text/html")
+                result = msg.send(fail_silently=True)
                 if result == 1:
                     messages.info(request, 'You should receive an email confirmation soon')
     elif 'release_slot_id' in request.POST and request.POST['release_slot_id'].isnumeric():
@@ -120,14 +122,15 @@ def email_staff_participants(request, pk):
         email = request.user.email
         if EmailAddress.objects.filter(email=email, verified=True).exists():
             html = '<h3>Staff</h3>\n<p>{}</p>\n<h3>Participants</h3>\n<p>{}</p>'.format(banner.staff, banner.participants)
-            result = send_mail(
-                '{} Staff & Participants'.format(banner.name),
-                strip_tags(html),
-                None, # (defaults to DEFAULT_FROM_EMAIL)
-                [request.user.email],
-                fail_silently=False,
-                html_message=html,
+            msg = EmailMultiAlternatives(
+                '{} Staff & Participants'.format(banner.name), # subject
+                strip_tags(html), #text content
+                'Prayer Banner <{}>'.format(settings.DEFAULT_FROM_EMAIL), # from
+                [request.user.email], # to
+                [settings.DEFAULT_FROM_EMAIL], # bcc
             )
+            msg.attach_alternative(html, "text/html")
+            result = msg.send()
             if result == 1:
                 messages.success(request, 'Email sent to {}'.format(request.user.email))
             else:
@@ -170,14 +173,15 @@ def send_banner_slot_reminders(request, pk):
             for slot in slots:
                 html += '{} - {}<br>\n'.format(timezone.localtime(slot.start_at, tz).strftime(date_format), timezone.localtime(slot.end_at, tz).strftime(date_format))
 
-            result = send_mail(
-                'Pray for {}'.format(banner.name),
-                strip_tags(html),
-                None, # (defaults to DEFAULT_FROM_EMAIL)
-                [user.email],
-                fail_silently=True,
-                html_message=html,
+            msg = EmailMultiAlternatives(
+                'Pray for {}'.format(banner.name), # subject
+                strip_tags(html), #text content
+                'Prayer Banner <{}>'.format(settings.DEFAULT_FROM_EMAIL), # from
+                [user.email], # to
+                [settings.DEFAULT_FROM_EMAIL], # bcc
             )
+            msg.attach_alternative(html, "text/html")
+            result = msg.send(fail_silently=True)
             if result == 1:
                 i += 1
                 for slot in slots:
