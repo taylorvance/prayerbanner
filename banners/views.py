@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.utils.html import strip_tags
+from django.db.models import Q
 
 from allauth.account.models import EmailAddress
 
@@ -20,8 +21,16 @@ from .forms import BannerForm
 
 
 class BannerList(ListView):
-    queryset = Banner.objects.filter(end_at__gt=timezone.now(), hide=False)
     template_name = 'banners/banner_list.html'
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            return Banner.objects.filter(
+                Q(end_at__gt=timezone.now())
+                & (Q(hide=False) | Q(administrator=self.request.user))
+            )
+        else:
+            return Banner.objects.filter(end_at__gt=timezone.now(), hide=False)
 
 
 class BannerSlots(DetailView):
