@@ -18,7 +18,12 @@
 	<tbody>
 		{% for banner in object_list %}
 			<tr>
-				<th scope="row"><a href="/banners/{{ banner.pk }}">{{ banner.name }}</a></th>
+				<th scope="row">
+					<a href="/banners/{{ banner.pk }}">{{ banner.name }}</a>
+					{% if banner.hide %}
+						<em class="text-muted" style="font-size:0.8em">[hidden]</em>
+					{% endif %}
+				</th>
 				<td>{{ banner.start_at | date:"M j, Y, P e" }}</td>
 				<td>{{ banner.end_at | date:"M j, Y, P e" }}</td>
 				<td><a href="{{ banner.url }}" target="_blank">{{ banner.url }}</a></td>

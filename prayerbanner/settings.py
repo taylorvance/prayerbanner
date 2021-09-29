@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'flatpickr',
     'tinymce',
     'captcha',
+    'django_db_logger',
 
     'website.apps.WebsiteConfig',
     'banners.apps.BannersConfig',
@@ -208,3 +209,18 @@ CAPTCHA_NOISE_FUNCTIONS = ('accounts.helpers.noise_lines', 'captcha.helpers.nois
 CAPTCHA_FILTER_FUNCTIONS = ('captcha.helpers.post_smooth', 'accounts.helpers.post_sharpen', 'accounts.helpers.post_magnify', 'accounts.helpers.post_crop')
 CAPTCHA_BACKGROUND_COLOR = '#fed'
 CAPTCHA_FOREGROUND_COLOR = '#248'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'loggers': {
+        'db': {'handlers': ['db_log'], 'level': 'DEBUG'}
+    },
+    'handlers': {
+        'db_log': {'level': 'DEBUG', 'class': 'django_db_logger.db_log_handler.DatabaseLogHandler'},
+    },
+    'formatters': {
+        'verbose': {'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'},
+        'simple': {'format': '%(levelname)s %(asctime)s %(message)s'},
+    },
+}
