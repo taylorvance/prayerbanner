@@ -128,7 +128,7 @@ AUTHENTICATION_BACKENDS = [
 EMAIL_CONFIG = env.email_url('EMAIL_URL', default='consolemail://')
 vars().update(EMAIL_CONFIG)
 
-EMAIL_USE_TLS = False
+EMAIL_USE_TLS = True
 
 DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', default='admin@localhost')
 
