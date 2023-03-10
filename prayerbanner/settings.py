@@ -125,11 +125,14 @@ AUTHENTICATION_BACKENDS = [
 # This expands into EMAIL_BACKEND, EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER, and EMAIL_HOST_PASSWORD
 # SMTP example: EMAIL_URL=smtp://user:password@prayerbanner.org:25
 # See "email_url" on https://django-environ.readthedocs.io/en/latest/#supported-types
-EMAIL_CONFIG = env.email_url('EMAIL_URL', default='consolemail://')
-vars().update(EMAIL_CONFIG)
-
-EMAIL_USE_TLS = True
-
+#EMAIL_CONFIG = env.email_url('EMAIL_URL', default='consolemail://')
+#vars().update(EMAIL_CONFIG)
+EMAIL_HOST = env.str('EMAIL_HOST', default='localhost')
+EMAIL_PORT = env.int('EMAIL_PORT', default=25)
+EMAIL_HOST_USER = env.str('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD', default='')
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=False)
+EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL', default=False)
 DEFAULT_FROM_EMAIL = env.str('DEFAULT_FROM_EMAIL', default='admin@localhost')
 
 
